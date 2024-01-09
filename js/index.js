@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 canvas.width = 1280
-canvas.height = 768
+canvas.height = 960
 
 
 c.fillStyle = 'white'
@@ -59,6 +59,8 @@ const towers = []
 let enemyCount = 3
 let activeTile = undefined
 let lives = 10
+let money = 150
+let wave = 1
 
 spawnWave(enemyCount)
 
@@ -80,6 +82,7 @@ function animate() {
         if (enemy.position.x > canvas.width) {
             lives -= 1
             enemies.splice(i, 1)
+            document.querySelector('#lives').innerHTML = lives
 
             if (lives === 0) {
                 console.log('game over')
@@ -89,10 +92,12 @@ function animate() {
         }
     }
 
-    // tracking total number of enemies
+    // tracking total number of enemies + wave count
     if (enemies.length === 0) {
         enemyCount+= 2
         spawnWave(enemyCount)
+        wave += 1
+        document.querySelector('#wave').innerHTML = wave
     }
 
     placementTiles.forEach((tile) => {
@@ -151,6 +156,8 @@ function animate() {
                     // failsafe for projectiles in flight
                     if (enemyIndex > -1) {
                         enemies.splice(enemyIndex, 1)
+                        money += 25
+                        document.querySelector('#money').innerHTML = money
                     }
                 }
                 
@@ -165,8 +172,10 @@ const mouse = {
     y: undefined
 }
 
-canvas.addEventListener('click', (event) => {
-    if (activeTile && !activeTile.isConstructed) {
+canvas.addEventListener('dblclick', (event) => {
+    if (activeTile && !activeTile.isConstructed && money - 50 >= 0) {
+        money -= 50
+        document.querySelector('#money').innerHTML = money
         towers.push(
             new Tower({
                 position: {
@@ -176,8 +185,27 @@ canvas.addEventListener('click', (event) => {
             })
         )
         activeTile.isConstructed = true
+
+        // sorting towers by y position to avoid rendering issues
+        towers.sort((tower1, tower2) => {
+            return tower1.position.y - tower2.position.y
+        })
     }
 })
+
+// event listener for tower radius display
+/*canvas.addEventListener('mousemove', (event) => {
+    const mousePosition = {
+        x: event.clientX - canvas.getBoundingClientRect().left,
+        y: event.clientY - canvas.getBoundingClientRect().top
+    }
+
+    towers.forEach(tower => {
+        const distance = Math.hypot(tower.center.x - mousePosition.x, 
+            tower.center.y - mousePosition.y)
+        tower.isMouseOver = distance < tower.width / 2
+    })
+})*/ // TO-BE-REMOVED: not usable in current form
 
 window.addEventListener('mousemove', (event)  => {
     mouse.x = event.clientX

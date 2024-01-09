@@ -1,6 +1,7 @@
-class Enemy {
+class Enemy extends Sprite {
     constructor({position = { x: 0, y: 0}}) {
-        this.position = position
+        super({position, imageSrc: 'img/noBKG_KnightRun_strip.png', frames: {max: 8}})
+        //this.position = position
         this.width = 32
         this.height = 32
         this.waypointIndex = 0
@@ -14,14 +15,12 @@ class Enemy {
             x: 0,
             y: 0,
         }
+
+        this.drawOffset = {x: -33, y: -16}
     }
 
     drawEnemy() {
-        c.fillStyle = 'red'
-        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
-        c.beginPath()
-        c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2)
-        c.fill()
+        super.drawSprite(this.drawOffset)
 
         // health bar
         c.fillStyle = 'rgba(255, 0, 0, 0.8)'
@@ -34,13 +33,14 @@ class Enemy {
 
     updateEnemy() { 
         this.drawEnemy()
+        super.updateSprite()
 
         const waypoint = waypoints[this.waypointIndex]
         const yDistance = waypoint.y - this.center.y
         const xDistance = waypoint.x - this.center.x
         const angle = Math.atan2(yDistance, xDistance)
 
-        const speed = 2
+        const speed = 1
 
         this.velocity.x = Math.cos(angle) * speed
         this.velocity.y = Math.sin(angle) * speed
