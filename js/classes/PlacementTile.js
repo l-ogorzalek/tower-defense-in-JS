@@ -19,7 +19,7 @@ class PlacementTile {
             mouse.y > this.position.y && 
             mouse.y < this.position.y + this.size
             ) {
-                this.color = 'rgba(191, 191, 191, 0.85)'
-            } else this.color = 'rgba(255, 255, 255, 0.2)'
+                this.color = 'rgba(191, 191, 191, 0.45)'
+            } else this.color = 'rgba(15, 15, 15, 0.3)'
     }
 }

@@ -39,7 +39,7 @@ class Sprite {
         this.framesAmount.elapsed++
         if (this.framesAmount.elapsed % this.framesAmount.hold === 0) {
         this.framesAmount.current++
-            if (this.framesAmount.current >= this.framesAmount.max - 1) {
+            if (this.framesAmount.current >= this.framesAmount.max) {
                 this.framesAmount.current = 0
             }
         }

@@ -42,18 +42,57 @@ image.onload = () => {
 image.src = 'img/gameMap.png'
 
 const enemies = []
+const enemyTypes = [Enemy, SecondEnemyWorm, ThirdEnemyShroom, FourthEnemyRunner]
 
-
+// old enemy spawn loop
+/*
 function spawnWave(spawnCount) {
     for (let i = 1; i < spawnCount + 1; i++) {
         const xSpawnOffset = i * 150
         enemies.push(
-            new Enemy({
+            new SecondEnemy({
                 position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
             })
         )
     }   
 }
+*/
+
+function spawnWave(waveNumber, spawnCount) {
+    for (let i = 1; i <= spawnCount; i++) {
+        const xSpawnOffset = i * 150;
+        let enemy;
+
+        if (waveNumber <= 2) {
+            enemy = new Enemy({
+                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
+            });
+        } else if (waveNumber > 2 && waveNumber <= 5) {
+            enemy = new SecondEnemyWorm({
+                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
+            });
+        } else if (waveNumber > 5 && waveNumber <= 7) {
+            enemy = new ThirdEnemyShroom({
+                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
+            });
+        } else if (waveNumber > 7 && waveNumber < 14) {
+            const randomIndex = Math.floor(Math.random() * enemyTypes.length);
+            const EnemyType = enemyTypes[randomIndex];
+            enemy = new EnemyType({
+                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
+            });
+        } else {
+            // last wave
+            spawnCount = 1;
+            enemy = new EnemyBoss({
+                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
+            });
+        }
+
+        enemies.push(enemy);
+    }
+}
+
 
 const towers = []
 let enemyCount = 3
@@ -61,8 +100,10 @@ let activeTile = undefined
 let lives = 10
 let money = 150
 let wave = 1
+let hasBossSurvived = false
+const explosions = []
 
-spawnWave(enemyCount)
+spawnWave(wave, enemyCount)
 
 function animate() {
     const animationID = requestAnimationFrame(animate)
@@ -80,22 +121,50 @@ function animate() {
         enemy.updateEnemy()
 
         if (enemy.position.x > canvas.width) {
-            lives -= 1
-            enemies.splice(i, 1)
-            document.querySelector('#lives').innerHTML = lives
+            if (wave < 15) {
+                lives -= 1
+                enemies.splice(i, 1)
+                document.querySelector('#lives').innerHTML = lives
+            } else {
+                hasBossSurvived = true
+                enemies.splice(i, 1)
+            }
 
-            if (lives === 0) {
+            if (lives === 0 || hasBossSurvived === true) {
+                document.querySelector('#lives').innerHTML = 0
                 console.log('game over')
                 cancelAnimationFrame(animationID)
                 document.querySelector('#gameOver').style.display = 'flex'
+                return
             }
         }
     }
 
+    for (let i = explosions.length - 1; i >= 0; i--) {
+        const explosion = explosions[i]
+        explosion.drawSprite()
+        explosion.updateSprite()
+        if (explosion.framesAmount.current >= explosion.framesAmount.max - 1) {
+            explosions.splice(i, 1)
+        }
+    }
+
+    // checking if game is won
+     if (wave === 15 && enemies.length === 0) {
+        console.log('YOU WIN')
+        cancelAnimationFrame(animationID)
+        document.querySelector('#youWin').style.display = 'flex'
+    }
+
     // tracking total number of enemies + wave count
     if (enemies.length === 0) {
-        enemyCount+= 2
-        spawnWave(enemyCount)
+        if (wave >= 0 && wave <= 2) {
+            enemyCount++
+        } else {
+            enemyCount = wave + 1
+        }
+        spawnWave(wave, enemyCount)
+        console.log(enemyCount)
         wave += 1
         document.querySelector('#wave').innerHTML = wave
     }
@@ -161,6 +230,14 @@ function animate() {
                     }
                 }
                 
+                explosions.push(
+                    new Sprite({
+                        position: {x: projectile.position.x - 33, y: projectile.position.y - 33},
+                        imageSrc: 'img/explosion.png',
+                        frames: {max: 4}
+                    })
+                )
+
                 tower.projectiles.splice(i, 1)
             }
         }        
