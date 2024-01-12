@@ -1,0 +1,69 @@
+body {
+    background-color: black;
+    font-family: 'DotGothic16', sans-serif;
+}
+
+#main {
+    position: relative; 
+    display: inline-block
+}
+
+.gameOverWinContainer {
+    position: absolute; 
+    top: 0; 
+    bottom: 0; 
+    left: 0; 
+    right: 0;
+    display: none; 
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.75);
+    font-size: 80px;
+    color: white;
+    -webkit-text-stroke: 3px black;
+}
+#gameOver, #youWin {
+    font-size: 100px;
+    color: white;
+    -webkit-text-stroke: 3px black;
+}
+
+#interface {
+    position: absolute; 
+    top: 4px; 
+    right: 8px; 
+    font-size: 25;
+    color: black;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+#interfaceBackground {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    width: 215px;
+    height: 30px;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right top,
+        rgba(0, 0, 0, 0.05), 
+        rgba(0, 0, 0, 0.225),
+        rgba(0, 0, 0, 0.05) 
+    );
+}
+#interfaceWave {
+    display: flex; 
+    align-items: center;
+}
+#interfaceLives {
+    display: flex; 
+    align-items: center;
+}
+#interfaceMoney {
+    display: flex; 
+    align-items: center;
+}
+#money {
+    margin-right: 15px;
+}

@@ -34,8 +34,8 @@ class Sprite {
         )
     }
 
+    //animation
     updateSprite() {
-        // animation
         this.framesAmount.elapsed++
         if (this.framesAmount.elapsed % this.framesAmount.hold === 0) {
         this.framesAmount.current++

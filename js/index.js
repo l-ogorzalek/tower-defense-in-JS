@@ -32,8 +32,6 @@ towerPlacementData2D.forEach((row, yIndex) => {
     })    
 })
 
-// console.log(placementTiles)
-
 const image = new Image()
 
 image.onload = () => {
@@ -43,20 +41,6 @@ image.src = 'img/gameMap.png'
 
 const enemies = []
 const enemyTypes = [Enemy, SecondEnemyWorm, ThirdEnemyShroom, FourthEnemyRunner]
-
-// old enemy spawn loop
-/*
-function spawnWave(spawnCount) {
-    for (let i = 1; i < spawnCount + 1; i++) {
-        const xSpawnOffset = i * 150
-        enemies.push(
-            new SecondEnemy({
-                position: {x: waypoints[0].x - xSpawnOffset, y: waypoints[0].y}
-            })
-        )
-    }   
-}
-*/
 
 function spawnWave(waveNumber, spawnCount) {
     for (let i = 1; i <= spawnCount; i++) {
@@ -109,12 +93,6 @@ function animate() {
     const animationID = requestAnimationFrame(animate)
 
     c.drawImage(image, 0, 0)
-
-    /*enemies.forEach(enemy => {
-        enemy.updateEnemy()
-    })*/ // TO-BE-REMOVED: old loop
-
-    // switching to for loop to avoid rendering issues
 
     for (let i = enemies.length - 1; i >= 0; i--) {
         const enemy = enemies[i]
@@ -193,18 +171,6 @@ function animate() {
             tower.target = null
         }
 
-        /*tower.target = null
-        const enemyInRange = enemies.filter(enemy => {
-            const xDifference = enemy.center.x - tower.center.x
-            const yDifference = enemy.center.y - tower.center.y
-            const distance = Math.hypot(xDifference, yDifference)
-            return distance < tower.firingRadius
-        })
-        tower.target = enemyInRange[0]*/ // TO-BE-REMOVED: old loop
-
-        // switching to for loop to avoid rendering issues with multiple 
-        // projectiles in the future
-
         for (let i = tower.projectiles.length - 1; i >= 0; i--) {
             const projectile = tower.projectiles[i]
 
@@ -269,20 +235,6 @@ canvas.addEventListener('dblclick', (event) => {
         })
     }
 })
-
-// event listener for tower radius display
-/*canvas.addEventListener('mousemove', (event) => {
-    const mousePosition = {
-        x: event.clientX - canvas.getBoundingClientRect().left,
-        y: event.clientY - canvas.getBoundingClientRect().top
-    }
-
-    towers.forEach(tower => {
-        const distance = Math.hypot(tower.center.x - mousePosition.x, 
-            tower.center.y - mousePosition.y)
-        tower.isMouseOver = distance < tower.width / 2
-    })
-})*/ // TO-BE-REMOVED: not usable in current form
 
 window.addEventListener('mousemove', (event)  => {
     mouse.x = event.clientX
